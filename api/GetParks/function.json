@@ -1,0 +1,30 @@
+{
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": [
+        "get"
+      ]
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    },
+    {
+      "type": "cosmosDB",
+      "direction": "in",
+      "name": "parks",
+      "databaseName": "pawks",
+      "collectionName": "parks",
+      "connectionStringSetting": "AzureWebJobsStorage",
+      "id": "",
+      "partitionKey": "undefined",
+      "sqlQuery": ""
+    }
+  ],
+  "scriptFile": "../dist/GetParks/index.js"
+}
