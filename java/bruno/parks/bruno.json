@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "parks",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
