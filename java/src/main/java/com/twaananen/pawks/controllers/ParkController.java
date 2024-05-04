@@ -1,9 +1,10 @@
 package com.twaananen.pawks.controllers;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,8 +30,8 @@ public class ParkController {
   }
 
   @GetMapping()
-  public List<ParkDto> getParks() {
-    return parkService.getParks();
+  public Page<ParkDto> listParks(Pageable pageable) {
+    return parkService.findAll(pageable);
   }
 
   @GetMapping(path = "/{id}")

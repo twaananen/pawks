@@ -6,6 +6,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.twaananen.pawks.domain.Park;
@@ -34,12 +36,17 @@ public class ParkServiceImpl implements ParkService {
   }
 
   @Override
-  public List<ParkDto> getParks() {
+  public List<ParkDto> findAll() {
     List<ParkDto> parks = StreamSupport
         .stream(parkRepository.findAll().spliterator(), false)
         .map(parkMapper::mapTo)
         .collect(Collectors.toList());
     return parks;
+  }
+
+  @Override
+  public Page<ParkDto> findAll(Pageable pageable) {
+    return parkRepository.findAll(pageable).map(parkMapper::mapTo);
   }
 
   @Override
@@ -63,4 +70,5 @@ public class ParkServiceImpl implements ParkService {
   public void deletePark(UUID id) {
     parkRepository.deleteById(id);
   }
+
 }
