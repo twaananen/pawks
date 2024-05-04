@@ -1,5 +1,5 @@
 meta {
-  name: create parks
+  name: create park
   type: http
   seq: 3
 }
@@ -16,4 +16,8 @@ body:json {
     "description": "Sekapuisto",
     "location": null
   }
+}
+
+vars:post-response {
+  id: res.body.id
 }

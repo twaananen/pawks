@@ -2,6 +2,8 @@ package com.twaananen.pawks.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -35,5 +37,32 @@ public class ParkServiceImpl implements ParkService {
     List<ParkDto> parks = new ArrayList<>();
     parkRepository.findAll().forEach(park -> parks.add(parkMapper.mapTo(park)));
     return parks;
+  }
+
+  @Override
+  public ParkDto getPark(UUID id) {
+    Optional<Park> parkOptional = parkRepository.findById(id);
+    if (parkOptional.isPresent())
+      return parkMapper.mapTo(parkOptional.get());
+    else
+      return null;
+  }
+
+  @Override
+  public ParkDto updatePark(UUID id, ParkDto park) {
+    Optional<Park> parkOptional = parkRepository.findById(id);
+    if (parkOptional.isPresent()) {
+      Park updatedPark = parkOptional.get();
+      updatedPark.setName(park.getName());
+      updatedPark.setDescription(park.getDescription());
+      updatedPark.setLocation(park.getLocation());
+      return parkMapper.mapTo(parkRepository.save(updatedPark));
+    } else
+      return null;
+  }
+
+  @Override
+  public void deletePark(UUID id) {
+    parkRepository.deleteById(id);
   }
 }
