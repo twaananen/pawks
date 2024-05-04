@@ -1,0 +1,27 @@
+meta {
+  name: update park
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:8083/api/parks/{{id}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Länsilinkin koira-aitaus",
+    "description": "Sekapuisto, ja pienet",
+    "location": null
+  }
+}
+
+vars:pre-request {
+  id: d17a3017-994c-483d-83a8-1375bb53aee3
+}
+
+vars:post-response {
+  id: res.body.id
+}

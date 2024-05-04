@@ -1,0 +1,11 @@
+meta {
+  name: delete park
+  type: http
+  seq: 6
+}
+
+delete {
+  url: http://localhost:8083/api/parks/{{id}}
+  body: none
+  auth: none
+}

@@ -1,0 +1,23 @@
+meta {
+  name: create park
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8083/api/parks
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Länsilinkin koira-aitaus",
+    "description": "Sekapuisto",
+    "location": null
+  }
+}
+
+vars:post-response {
+  id: res.body.id
+}
