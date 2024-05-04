@@ -1,9 +1,10 @@
 package com.twaananen.pawks.services.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Service;
 
@@ -25,40 +26,37 @@ public class ParkServiceImpl implements ParkService {
   }
 
   @Override
-  public ParkDto createPark(ParkDto parkDto) {
+  public Optional<ParkDto> createPark(ParkDto parkDto) {
     Park park = parkMapper.mapFrom(parkDto);
     Park savedPark = parkRepository.save(park);
     ParkDto savedParkDto = parkMapper.mapTo(savedPark);
-    return savedParkDto;
+    return Optional.of(savedParkDto);
   }
 
   @Override
   public List<ParkDto> getParks() {
-    List<ParkDto> parks = new ArrayList<>();
-    parkRepository.findAll().forEach(park -> parks.add(parkMapper.mapTo(park)));
+    List<ParkDto> parks = StreamSupport
+        .stream(parkRepository.findAll().spliterator(), false)
+        .map(parkMapper::mapTo)
+        .collect(Collectors.toList());
     return parks;
   }
 
   @Override
-  public ParkDto getPark(UUID id) {
-    Optional<Park> parkOptional = parkRepository.findById(id);
-    if (parkOptional.isPresent())
-      return parkMapper.mapTo(parkOptional.get());
-    else
-      return null;
+  public Optional<ParkDto> getPark(UUID id) {
+    return parkRepository.findById(id).map(existingPark -> {
+      return Optional.of(parkMapper.mapTo(existingPark));
+    }).orElse(Optional.empty());
   }
 
   @Override
-  public ParkDto updatePark(UUID id, ParkDto park) {
-    Optional<Park> parkOptional = parkRepository.findById(id);
-    if (parkOptional.isPresent()) {
-      Park updatedPark = parkOptional.get();
-      updatedPark.setName(park.getName());
-      updatedPark.setDescription(park.getDescription());
-      updatedPark.setLocation(park.getLocation());
-      return parkMapper.mapTo(parkRepository.save(updatedPark));
-    } else
-      return null;
+  public Optional<ParkDto> updatePark(UUID id, ParkDto park) {
+    return parkRepository.findById(id).map(existingPark -> {
+      Optional.ofNullable(park.getName()).ifPresent(existingPark::setName);
+      Optional.ofNullable(park.getDescription()).ifPresent(existingPark::setDescription);
+      Optional.ofNullable(park.getLocation()).ifPresent(existingPark::setLocation);
+      return Optional.of(parkMapper.mapTo(parkRepository.save(existingPark)));
+    }).orElse(Optional.empty());
   }
 
   @Override

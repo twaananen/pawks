@@ -1,8 +1,11 @@
 package com.twaananen.pawks.controllers;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,22 +34,32 @@ public class ParkController {
   }
 
   @GetMapping(path = "/{id}")
-  public ParkDto getPark(@PathVariable("id") UUID id) {
-    return parkService.getPark(id);
+  public ResponseEntity<ParkDto> getPark(@PathVariable("id") UUID id) {
+    Optional<ParkDto> parkOptional = parkService.getPark(id);
+    return parkOptional
+        .map(park -> new ResponseEntity<>(park, HttpStatus.OK))
+        .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
   @PostMapping()
-  public ParkDto createPark(@RequestBody ParkDto park) {
-    return parkService.createPark(park);
+  public ResponseEntity<ParkDto> createPark(@RequestBody ParkDto park) {
+    Optional<ParkDto> parkOptional = parkService.createPark(park);
+    return parkOptional
+        .map(savedPark -> new ResponseEntity<>(savedPark, HttpStatus.CREATED))
+        .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
   }
 
   @PutMapping(path = "/{id}")
-  public ParkDto updatePark(@PathVariable("id") UUID id, @RequestBody ParkDto park) {
-    return parkService.updatePark(id, park);
+  public ResponseEntity<ParkDto> updatePark(@PathVariable("id") UUID id, @RequestBody ParkDto park) {
+    Optional<ParkDto> parkOptional = parkService.updatePark(id, park);
+    return parkOptional
+        .map(savedPark -> new ResponseEntity<>(savedPark, HttpStatus.OK))
+        .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
   @DeleteMapping(path = "/{id}")
-  public void deletePark(@PathVariable("id") UUID id) {
+  public ResponseEntity<Void> deletePark(@PathVariable("id") UUID id) {
     parkService.deletePark(id);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }
